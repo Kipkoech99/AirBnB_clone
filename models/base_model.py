@@ -38,7 +38,7 @@ class BaseModel:
     def __str__(self):
         '''Returns string repr of the object'''
         class_name = self.__class__.__name__
-        return(f"[{class_name}] ({self.id}), {self.__dict__}")
+        return(f"[{class_name}] ({self.id}) {self.__dict__}")
 
     def save(self):
         '''Updates when object was saved'''
