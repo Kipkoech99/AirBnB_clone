@@ -2,8 +2,8 @@
 '''Module with class Base class for the objects'''
 
 import uuid
-import datetime
-
+from datetime import datetime
+from models import storage
 
 class BaseModel:
     '''
@@ -34,6 +34,7 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.datetime.now()
             self.updated_at = self.created_at
+            storage.new(self)
 
     def __str__(self):
         '''Returns string repr of the object'''
@@ -43,6 +44,7 @@ class BaseModel:
     def save(self):
         '''Updates when object was saved'''
         self.updated_at = datetime.datetime.now()
+        storage.save()
 
     def to_dict(self):
         '''Returns dictionary repr of the object'''
