@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 """ Module for the revie class """
 
-from models.base_moel import BaseModel
+from models.base_model import BaseModel
+from datetime import datetime
+import uuid
 
 
 class Review(BaseModel):
