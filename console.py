@@ -2,7 +2,6 @@
 """module for command line interpreter"""
 import sys
 import cmd
-from models.base_model import BaseModel
 from models import storage
 
 class HBNBCommand(cmd.Cmd):
@@ -44,7 +43,7 @@ class HBNBCommand(cmd.Cmd):
             token = args.split(' ')
             if token[0] not in storage.classes():
                 print("** class doesn't exist **")
-            elif token[1] == "" or None:
+            elif len(token) < 2 or token[1] is None:
                 print("** instance id missing **")
             else:
                 key = f"{token[0]}.{token[1]}"
@@ -73,17 +72,20 @@ class HBNBCommand(cmd.Cmd):
     
     def do_all(self, args):
         """Prints all string representation of all instances based or not on the class name"""
-        if args != "":
-            word = args.split(' ')
-            if word[0] not in storage.classes():
+        if args:
+            class_name = args[0]
+            if class_name not in storage.classes():
                 print("** class doesn't exist **")
             else:
-                ls1 = [str(obj) for key, obj in storage.classes()
-                        if type(obj).__name__ == word[0]]
-                print(ls1)
+                instances = storage.all()
+                class_instances = []
+                for key, value in instances.items():
+                    if key == class_name:
+                        class_instances = [str(instance) for instance in class_name]
+                return class_instances
         else:
-            new_list = [str(obj) for key, obj in storage.classes()]
-            print(new_list)
+            instance_list = [str(instance) for instance in storage.all().values()]
+            print(instance_list)
 
     def do_update(self, args):
         """
@@ -105,17 +107,18 @@ class HBNBCommand(cmd.Cmd):
                 key = f"{word[0]}.{word[1]}"
                 instances = storage.all()
                 if key in instances:
-                    instance = instance[key]
+                    instance = instances[key]
                     setattr(instance, word[2], word[3].strip('"'))
                     storage.save()
                 else:
                     print("** no instance found **")
 
+    def do_test(self, args):
+        classes = storage.classes()
+        print(classes)
+
         
 
 
 if __name__=="__main__":
-    if len(sys.argv) > 1:
-        HBNBCommand().onecmd(' '.join(sys.argv[1:]))
-    else:
-        HBNBCommand().cmdloop()
+    HBNBCommand().cmdloop()

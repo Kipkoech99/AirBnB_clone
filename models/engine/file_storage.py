@@ -25,42 +25,41 @@ class FileStorage:
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)"""
         d = {}
-        for key, value in self.__objects.items():
+        for key, value in FileStorage.__objects.items():
             d[key] = value.to_dict()
-        with open(self.__file_path, "w", encoding="utf-8") as f:
+        with open(FileStorage.__file_path, "w", encoding="utf-8") as f:
             json.dump(d, f)
 
-    def reload(self):
-        """
-        deserializes the JSON file to __objects (only if the JSON file (__file_path) exists)
-        """
-        # import BaseModel here to avoid circular import
-        from models.base_model import BaseModel
-        if not os.path.isfile(self.__file_path):
-            return
-        if os.path.isfile(self.__file_path):
-            with open(self.__file_path, "r", encoding="utf-8") as f:
-                obj_dict = json.load(f)
-                for k, v in obj_dict.items():
-                    class_name = v['__class__']
-                    cls = eval(class_name)
-                    self.__objects[k] = cls(**v)
-
     def classes(self):
-        """Returns dictionary of available classes"""
+        """Returns a dictionary of valid classes and their references"""
+        from models.base_model import BaseModel
+        from models.user import User
         from models.state import State
         from models.city import City
         from models.amenity import Amenity
         from models.place import Place
         from models.review import Review
-        from models.base_model import BaseModel
 
         classes = {
                 "BaseModel": BaseModel,
+                "User": User,
                 "State": State,
                 "City": City,
                 "Amenity": Amenity,
                 "Place": Place,
-                "Review": Review,
-                "User": User}
+                "Review": Review
+                }
         return classes
+
+
+    def reload(self):
+        """
+        deserializes the JSON file to __objects (only if the JSON file (__file_path) exists)
+        """
+        if not os.path.isfile(FileStorage.__file_path):
+            return
+        with open(FileStorage.__file_path, "r", encoding="utf-8") as f:
+            obj_dict = json.load(f)
+            obj_dict = {k: self.classes()[v["__class__"]](**v)
+                        for k, v in obj_dict.items()}
+            FileStorage.__objects = obj_dict
