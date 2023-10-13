@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """module for command line interpreter"""
+import sys
 import cmd
 from models.base_model import BaseModel
 from models import storage
@@ -37,7 +38,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, args):
         """ Prints the string representation of an instance based on the class name and id"""
-        if args == "" or None:
+        if args == "" or args is None:
             print("** class name missing **")
         else:
             token = args.split(' ')
@@ -52,6 +53,69 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     print(storage.all()[key])
 
+    def do_destroy(self, args):
+        """Deletes an instance based on the class name and id (save the change into the JSON file)"""
+        if args == "" or args is None:
+            print("** class name missing **")
+        else:
+            word = args.split(' ')
+            if word[0] not in storage.classes():
+                print("** class doesn't exist **")
+            elif len(word) < 2:
+                print("** instance id missing **")
+            else:
+                key = f"{word[0]}.{word[1]}"
+                if key not in storage.all():
+                    print("** no instance found **")
+                else:
+                    del storage.all()[key]
+                    storage.save()
+    
+    def do_all(self, args):
+        """Prints all string representation of all instances based or not on the class name"""
+        if args != "":
+            word = args.split(' ')
+            if word[0] not in storage.classes():
+                print("** class doesn't exist **")
+            else:
+                ls1 = [str(obj) for key, obj in storage.classes()
+                        if type(obj).__name__ == word[0]]
+                print(ls1)
+        else:
+            new_list = [str(obj) for key, obj in storage.classes()]
+            print(new_list)
+
+    def do_update(self, args):
+        """
+        Updates an instance based on the class name and id by adding or updating attribute
+        """
+        if args == "" or args is None:
+            print("** class name missing **")
+        else:
+            word = args.split(' ')
+            if word[0] not in storage.classes():
+                print("** class doesn't exist **")
+            elif len(word) < 2:
+                print("** instance id missing **")
+            elif len(word) < 3:
+                print("** attribute name missing **")
+            elif len(word) < 4:
+                print("** value missing **")
+            else:
+                key = f"{word[0]}.{word[1]}"
+                instances = storage.all()
+                if key in instances:
+                    instance = instance[key]
+                    setattr(instance, word[2], word[3].strip('"'))
+                    storage.save()
+                else:
+                    print("** no instance found **")
+
+        
+
 
 if __name__=="__main__":
-    HBNBCommand().cmdloop()
+    if len(sys.argv) > 1:
+        HBNBCommand().onecmd(' '.join(sys.argv[1:]))
+    else:
+        HBNBCommand().cmdloop()

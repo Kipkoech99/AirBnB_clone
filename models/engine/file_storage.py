@@ -3,6 +3,7 @@
     This module creates a class that is used in serialization \
             and deserialization of JSON files
 """
+import datetime
 import json
 import os
 
@@ -11,7 +12,6 @@ class FileStorage:
 
     __file_path = 'file.json'
     __objects = {}
-    __classes = {}
 
     def all(self):
         """returns the dictionary __objects"""
@@ -43,7 +43,21 @@ class FileStorage:
                 if class_name and class_name in self.__classes:
                     self.__objects[k] = self.__classes[class_name](**v)
 
-    @classmethod
-    def classes(cls):
+    def classes(self):
         """Returns dictionary of available classes"""
-        return cls.__classes
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
+        from models.base_model import BaseModel
+
+        classes = {
+                "BaseModel": BaseModel,
+                "State": State,
+                "City": City,
+                "Amenity": Amenity,
+                "Place": Place,
+                "Review": Review,
+                "User": User}
+        return classes
