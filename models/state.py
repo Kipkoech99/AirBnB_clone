@@ -3,6 +3,7 @@
 
 from models.base_model import BaseModel
 
+
 class State(BaseModel):
     '''
     State subclass of BaseModel class
@@ -10,4 +11,4 @@ class State(BaseModel):
     Methods:
         __init__: class constructor
     '''
-        name = ""  # empty name -> name of the state
+    name = ""  # empty name -> name of the state

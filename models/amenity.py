@@ -3,6 +3,7 @@
 
 from models.base_model import BaseModel
 
+
 class Amenity(BaseModel):
     '''
     Class for storing amenity information
@@ -10,4 +11,4 @@ class Amenity(BaseModel):
     Attributes:
         name: of the amenity
     '''
-        name = ""
+    name = ""

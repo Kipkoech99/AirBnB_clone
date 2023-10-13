@@ -13,6 +13,6 @@ class Review(BaseModel):
         user_id: of associated user
         text: review
     '''
-        place_id = ""
-        user_id = ""
-        text = ""
+    place_id = ""
+    user_id = ""
+    text = ""

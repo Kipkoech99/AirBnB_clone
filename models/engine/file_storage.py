@@ -34,14 +34,17 @@ class FileStorage:
         """
         deserializes the JSON file to __objects (only if the JSON file (__file_path) exists)
         """
+        # import BaseModel here to avoid circular import
+        from models.base_model import BaseModel
         if not os.path.isfile(self.__file_path):
             return
-        with open(self.__file_path, "r", encoding="utf-8") as f:
-            obj_dict = json.load(f)
-            for k, v in obj_dict.items():
-                class_name = v.get("__class__", None)
-                if class_name and class_name in self.__classes:
-                    self.__objects[k] = self.__classes[class_name](**v)
+        if os.path.isfile(self.__file_path):
+            with open(self.__file_path, "r", encoding="utf-8") as f:
+                obj_dict = json.load(f)
+                for k, v in obj_dict.items():
+                    class_name = v['__class__']
+                    cls = eval(class_name)
+                    self.__objects[k] = cls(**v)
 
     def classes(self):
         """Returns dictionary of available classes"""
