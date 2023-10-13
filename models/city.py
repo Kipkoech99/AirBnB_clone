@@ -2,7 +2,6 @@
 '''Module for city subclass'''
 
 from models.base_model import BaseModel
-from datetime import datetime
 
 
 class City(BaseModel):
@@ -12,8 +11,5 @@ class City(BaseModel):
         state_id: ID of associated state
         name: name of the city
     '''
-    def __init__(self, *args, **kwargs):
-        '''class constructor'''
-        super().__init__(*args, **kwargs)
-        self.state_id = ""
-        self.name = ""
+        state_id = ""
+        name = ""
