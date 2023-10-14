@@ -70,22 +70,21 @@ class HBNBCommand(cmd.Cmd):
                     del storage.all()[key]
                     storage.save()
     
-    def do_all(self, args):
+    def do_all(self, arg):
         """Prints all string representation of all instances based or not on the class name"""
-        if args:
-            class_name = args[0]
+        if not arg:
+            # If no class name is provided, print all instances
+            instances = storage.all()
+        else:
+            class_name = arg.split()[0]
+            # Check if the class name exists in your model classes
             if class_name not in storage.classes():
                 print("** class doesn't exist **")
-            else:
-                instances = storage.all()
-                class_instances = []
-                for key, value in instances.items():
-                    if key == class_name:
-                        class_instances = [str(instance) for instance in class_name]
-                return class_instances
-        else:
-            instance_list = [str(instance) for instance in storage.all().values()]
-            print(instance_list)
+                return
+            # If class name exists, filter instances of that class
+            instances = {k: v for k, v in storage.all().items() if k.startswith(class_name + '.')}
+
+        print([str(instance) for instance in instances.values()])
 
     def do_update(self, args):
         """
